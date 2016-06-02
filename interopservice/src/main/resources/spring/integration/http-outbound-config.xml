@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:int="http://www.springframework.org/schema/integration"
+	xmlns:int-http="http://www.springframework.org/schema/integration/http"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
+		http://www.springframework.org/schema/integration/http http://www.springframework.org/schema/integration/http/spring-integration-http.xsd">
+
+	<int:gateway id="requestGateway" 
+	             service-interface="org.csp.omsutils.interopservice.httpclient.InteropClient"
+	             default-request-channel="requestChannel"/>
+	
+	<int:channel id="requestChannel"/>
+
+	<int-http:outbound-gateway request-channel="requestChannel" 
+					           url="http://localhost:7001/smcfs/interop/AuthorizationOnlyApiServlet?YFSEnvironment.progId=SterlingHttpTester&amp;InteropApiName={InteropApiName}&amp;IsFlow={IsFlow}&amp;ApiName={ApiName}&amp;ServiceName={ServiceName}&amp;YFSEnvironment.userId=admin&amp;YFSEnvironment.password=password&amp;InteropApiData={InteropApiData}&amp;TemplateData={TemplateData}" 
+					           http-method="POST"
+					           expected-response-type="java.lang.String" >
+					           
+		<int-http:uri-variable name="InteropApiData" expression="payload.InteropApiData" />			           
+		<int-http:uri-variable name="TemplateData" expression="payload.TemplateData" />
+		<int-http:uri-variable name="InteropApiName" expression="payload.InteropApiName" />			           
+		<int-http:uri-variable name="IsFlow" expression="payload.IsFlow" />
+		<int-http:uri-variable name="ApiName" expression="payload.ApiName" />			           
+		<int-http:uri-variable name="ServiceName" expression="payload.ServiceName" />
+					           
+	</int-http:outbound-gateway>
+
+</beans>
